@@ -9,10 +9,13 @@ const {
   GraphQLInt
 } = require('graphql');
 
+// 书是属于作者，作者有很多书, 一对多
+// 查询一个作者的书
+// 查询一本书的作者
 const books = [
-  { name: "算法导论", genre: "计算机科学", id: "1" },
-  { name: "人性的弱点", genre: "社交", id: "2" },
-  { name: "明朝那些事儿", genre: "历史", id: "3" }
+  { name: "算法导论", genre: "计算机科学", id: "1", authorId: '1' },
+  { name: "人性的弱点", genre: "社交", id: "2", authorId: '2' },
+  { name: "明朝那些事儿", genre: "历史", id: "3", authorId: '3' }
 ];
 
 const authors = [
@@ -26,7 +29,13 @@ const BookType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    genre: { type: GraphQLString }
+    genre: { type: GraphQLString },
+    author: {
+      type: AuthorType,
+      resolve(parent, args) {
+        return _.find(authors, { id: parent.authorId })
+      }
+    }
   })
 })
 
