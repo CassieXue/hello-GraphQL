@@ -6,7 +6,8 @@ const {
   GraphQLString,
   GraphQLSchema,
   GraphQLID,
-  GraphQLInt
+  GraphQLInt,
+  GraphQLList
 } = require('graphql');
 
 // 书是属于作者，作者有很多书, 一对多
@@ -15,7 +16,9 @@ const {
 const books = [
   { name: "算法导论", genre: "计算机科学", id: "1", authorId: '1' },
   { name: "人性的弱点", genre: "社交", id: "2", authorId: '2' },
-  { name: "明朝那些事儿", genre: "历史", id: "3", authorId: '3' }
+  { name: "明朝那些事儿", genre: "历史", id: "3", authorId: '3' },
+  { name: "诱人的 GraqhQL 教程", genre: "计算机科学", id: "4", authorId: '1' },
+  { name: "诱人的 mobx 教程", genre: "计算机科学", id: "5", authorId: '2' },
 ];
 
 const authors = [
@@ -44,7 +47,13 @@ const AuthorType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    age: { type: GraphQLInt }
+    age: { type: GraphQLInt },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve(parent, args) {
+        return _.filter(books, { authorId: parent.id })
+      }
+    }
   })
 })
 
