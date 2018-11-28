@@ -15,19 +15,19 @@ const {
 // 书是属于作者，作者有很多书, 一对多
 // 查询一个作者的书
 // 查询一本书的作者
-const books = [
-  { name: "算法导论", genre: "计算机科学", id: "1", authorId: '1' },
-  { name: "人性的弱点", genre: "社交", id: "2", authorId: '2' },
-  { name: "明朝那些事儿", genre: "历史", id: "3", authorId: '3' },
-  { name: "诱人的 GraqhQL 教程", genre: "计算机科学", id: "4", authorId: '1' },
-  { name: "诱人的 mobx 教程", genre: "计算机科学", id: "5", authorId: '2' },
-];
-
-const authors = [
-  { name: "hfpp2012", age: 27, id: "1" },
-  { name: "rails365", age: 30, id: "2" },
-  { name: "lili", age: 21, id: "3" }
-];
+// const books = [
+//   { name: "算法导论", genre: "计算机科学", id: "1", authorId: '1' },
+//   { name: "人性的弱点", genre: "社交", id: "2", authorId: '2' },
+//   { name: "明朝那些事儿", genre: "历史", id: "3", authorId: '3' },
+//   { name: "诱人的 GraqhQL 教程", genre: "计算机科学", id: "4", authorId: '1' },
+//   { name: "诱人的 mobx 教程", genre: "计算机科学", id: "5", authorId: '2' },
+// ];
+//
+// const authors = [
+//   { name: "hfpp2012", age: 27, id: "1" },
+//   { name: "rails365", age: 30, id: "2" },
+//   { name: "lili", age: 21, id: "3" }
+// ];
 
 const BookType = new GraphQLObjectType({
   name: "Book",
@@ -94,6 +94,28 @@ const RootQuery = new GraphQLObjectType({
   }
 })
 
+const Mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {
+    addAuthor: {
+      type: AuthorType,
+      args: {
+        name: { type: GraphQLString },
+        age: { type: GraphQLInt }
+      },
+      resolve(parent, args) {
+        let author = new Author({
+          name: args.name,
+          age: args.age
+        })
+
+        return author.save();
+      }
+    }
+  }
+})
+
 module.exports = new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation: Mutation
 });
